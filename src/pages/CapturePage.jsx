@@ -4,7 +4,7 @@ import { useCapture } from "../context/CaptureContext";
 import faceGuide from "../assets/face.svg";
 import "./CapturePage.css";
 
-const RECORD_DURATION_SEC = 15;
+const RECORD_DURATION_SEC = 6;
 
 export const CapturePage = () => {
   const videoRef = useRef(null);

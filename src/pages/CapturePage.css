@@ -15,7 +15,7 @@
   color: var(--Color1, #2C498B);
   text-align: center;
   font-family: Avenir;
-  font-size: min(10vw, 10vh * 0.15);
+  font-size: min(10vw, 10vh * 0.20);
   font-style: normal;
   font-weight: 300;
   line-height: normal;

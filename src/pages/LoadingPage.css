@@ -9,21 +9,18 @@
 
 .loading-page__video {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
   z-index: 0;
 }
 
 .loading-page__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
@@ -69,12 +66,12 @@
 .loading-page__content {
   position: fixed;
   left: 50%;
-  bottom: clamp(80px, 15vh, 120px);
+  bottom: clamp(100px, 15vh, 120px);
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   z-index: 10;
   width: 100%;
   max-width: 600px;
@@ -86,7 +83,7 @@
   color: #ffffff;
   text-align: center;
   font-family: Avenir;
-  font-size: min(10vw, 10vh * 0.15);
+  font-size: min(10vw, 10vh * 0.20);
   font-style: normal;
   font-weight: 300;
   line-height: normal;
@@ -97,9 +94,9 @@
 .loading-page__bar-wrap {
   width: 100%;
   max-width: 280px;
-  height: 8px;
+  height: 12px;
   border-radius: 100px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.2);
   margin: 0;
@@ -108,7 +105,7 @@
 .loading-page__bar-fill {
   height: 100%;
   background: var(--Color1, #ffffff);
-  border-radius: 2px;
+  border-radius: 100px;
   transition: width 0.05s linear;
   width: var(--progress-width, 0%);
 }

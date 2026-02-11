@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { CushionWithPieChart } from "../components/CushionWithPieChart";
 import { useCapture } from "../context/CaptureContext";
 import "./ResultsPage.css";
 
@@ -35,33 +36,6 @@ export const ResultsPage = () => {
     || renderImageUrl 
     || capturedVideoUrl;
 
-  // Use real data from API instead of random generation
-  const shadeData = {
-    percentages: foundationShades.map(shade => shade.percentage),
-    colors: foundationShades.map(shade => shade.color)
-  };
-
-  // Calculate pie chart segments with random distributions
-  let currentAngle = -90; // Start from top (-90 to start at 12 o'clock)
-  const pieSegments = foundationShades.map((shade, index) => {
-    const percentage = shadeData.percentages[index];
-    const segmentAngle = (percentage / 100) * 360; // Convert percentage to degrees
-    const startAngle = currentAngle;
-    const endAngle = currentAngle + segmentAngle;
-    const centerAngle = (startAngle + endAngle) / 2; // Center angle of the segment
-    
-    currentAngle = endAngle; // Move to next segment
-    
-    return {
-      shade,
-      color: shadeData.colors[index],
-      percentage,
-      startAngle,
-      endAngle,
-      segmentAngle,
-      centerAngle,
-    };
-  });
 
   // Extract a frame from video and convert to image
   useEffect(() => {
@@ -124,79 +98,9 @@ export const ResultsPage = () => {
         </div>
 
         <div className="results-page__foundation-section">
-          <p className="results-page__label results-page__label--center">YOUR BEST FACE COLOR</p>
+          <p className="results-page__label">YOUR BEST FACE COLOR</p>
           <div className="results-page__foundation-circle">
-            <svg
-              className="results-page__unified-chart"
-              viewBox="0 0 500 500"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              {/* Cushion illustration */}
-              <g className="cushion-illustration" aria-hidden="true" transform="translate(250, 255) scale(1.35) translate(-162.426, -192.5)">
-                <circle cx="162.331" cy="192.501" r="102.208" transform="rotate(-24.4183 162.331 192.501)" fill="#A0A0A0"/>
-                <path d="M217.009 44.0101L20.1854 133.369L108.071 57.1789L217.009 44.0101Z" fill="#A0A0A0"/>
-                <rect x="90.8262" y="86.3921" width="33.9319" height="25.0661" transform="rotate(-27.1674 90.8262 86.3921)" fill="#A0A0A0"/>
-                <circle cx="162.426" cy="188.959" r="102.137" transform="rotate(-24.4183 162.426 188.959)" fill="#D9D9D9"/>
-                <path d="M90.9018 230.253C99.992 245.997 114.023 258.303 130.82 265.26C147.617 272.217 166.239 273.438 183.8 268.733C201.361 264.027 216.879 253.659 227.946 239.235C239.014 224.812 245.013 207.139 245.013 188.959L162.425 188.959L90.9018 230.253Z" fill="#9B9B9B"/>
-                <path d="M226.287 241.328C233.677 232.317 239.076 221.844 242.129 210.597C245.182 199.351 245.821 187.585 244.003 176.074C242.184 164.563 237.951 153.567 231.58 143.809C225.209 134.051 216.845 125.752 207.037 119.457L162.426 188.959L226.287 241.328Z" fill="#9B9B9B"/>
-                <path d="M237.627 154.817C232.39 143.282 224.569 133.107 214.771 125.078C204.972 117.049 193.458 111.381 181.119 108.514C168.78 105.647 155.946 105.656 143.611 108.542C131.277 111.428 119.771 117.113 109.985 125.157C100.198 133.201 92.3934 143.388 87.1739 154.931C81.9545 166.474 79.4603 179.062 79.8844 191.723C80.3084 204.384 83.6393 216.778 89.6194 227.945C95.5994 239.113 104.068 248.755 114.371 256.126L162.426 188.959L237.627 154.817Z" fill="#9B9B9B"/>
-                <path d="M1.56358 92.7714C1.56358 92.7714 60.2058 61.9937 100.32 43.7815C140.435 25.5694 198.318 3.44391 198.318 3.44391L216.635 43.788C216.635 43.788 157.411 65.6007 118.29 83.3617C79.1691 101.123 19.88 133.115 19.88 133.115L1.56358 92.7714Z" fill="#D9D9D9"/>
-              </g>
-
-              {/* Pie chart segments */}
-              <g className="pie-chart">
-                {pieSegments.map((segment) => {
-                  const pieCenterX = 250;
-                  const pieCenterY = 250;
-                  const pieRadius = 115;
-                  const largeArcFlag = segment.segmentAngle > 180 ? 1 : 0;
-                  const startX = pieCenterX + pieRadius * Math.cos((segment.startAngle * Math.PI) / 180);
-                  const startY = pieCenterY + pieRadius * Math.sin((segment.startAngle * Math.PI) / 180);
-                  const endX = pieCenterX + pieRadius * Math.cos((segment.endAngle * Math.PI) / 180);
-                  const endY = pieCenterY + pieRadius * Math.sin((segment.endAngle * Math.PI) / 180);
-                  
-                  return (
-                    <path
-                      key={segment.shade.code}
-                      d={`M ${pieCenterX} ${pieCenterY} L ${startX} ${startY} A ${pieRadius} ${pieRadius} 0 ${largeArcFlag} 1 ${endX} ${endY} Z`}
-                      fill={segment.color}
-                      stroke="#fff"
-                      strokeWidth="2"
-                    />
-                  );
-                })}
-              </g>
-
-              {/* Labels - positioned inside pie segments */}
-              <g className="labels">
-                {pieSegments.map((segment) => {
-                  const pieCenterX = 250;
-                  const pieCenterY = 250;
-                  const pieRadius = 115;
-                  const angleRad = (segment.centerAngle * Math.PI) / 180;
-                  
-                  // Position labels at the center of each pie segment
-                  // Use a radius that's about 60% of the pie radius to place them inside
-                  const labelRadius = pieRadius * 0.6;
-                  const labelX = pieCenterX + labelRadius * Math.cos(angleRad);
-                  const labelY = pieCenterY + labelRadius * Math.sin(angleRad);
-                  
-                  return (
-                    <text
-                      key={`label-${segment.shade.code}`}
-                      x={labelX}
-                      y={labelY}
-                      className="results-page__shade-label"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan className="results-page__shade-code" x={labelX} dy="-6">{segment.shade.code}</tspan>
-                      <tspan className="results-page__shade-rank" x={labelX} dy="12">{segment.shade.rank}</tspan>
-                    </text>
-                  );
-                })}
-              </g>
-            </svg>
+            <CushionWithPieChart foundationShades={foundationShades} />
           </div>
         </div>
       </div>
@@ -245,15 +149,21 @@ export const ResultsPage = () => {
             </p>
             <div className="results-page__swatches">
               {lipstickSwatches.map((swatch, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`results-page__swatch ${i === selectedLipstickIndex ? "results-page__swatch--selected" : ""}`}
-                  style={{ "--swatch-color": swatch.color }}
-                  onClick={() => setSelectedLipstickIndex(i)}
-                  aria-label={`Lipstick shade ${i + 1}`}
-                  aria-pressed={i === selectedLipstickIndex}
-                />
+                <div key={i} className="results-page__swatch-wrap">
+                  <button
+                    type="button"
+                    className={`results-page__swatch ${i === selectedLipstickIndex ? "results-page__swatch--selected" : ""}`}
+                    style={{ "--swatch-color": swatch.color }}
+                    onClick={() => setSelectedLipstickIndex(i)}
+                    aria-label={`Lipstick shade ${swatch.label}`}
+                    aria-pressed={i === selectedLipstickIndex}
+                  />
+                  <span
+                    className={`results-page__swatch-label ${i === selectedLipstickIndex ? "results-page__swatch-label--visible" : ""}`}
+                  >
+                    {swatch.label}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

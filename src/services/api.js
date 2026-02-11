@@ -45,6 +45,11 @@ export async function uploadVideoAndAnalyze(videoBlobUrl) {
     return data;
   } catch (error) {
     console.error('Error uploading video for analysis:', error);
+    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+      throw new Error(
+        'Backend not reachable. Start the backend: cd backend && uvicorn main:app --reload'
+      );
+    }
     throw error;
   }
 }

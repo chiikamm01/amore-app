@@ -54,7 +54,8 @@ export const LoadingPage = () => {
         }, 500);
       } catch (err) {
         setProgress(0);
-        setError(err.message || "Analysis failed. Please try again.");
+        const msg = err.message || "Analysis failed. Please try again.";
+        setError(msg);
         console.error("Analysis error:", err);
         // Optionally redirect back to camera after error
         // setTimeout(() => navigate("/camera"), 3000);

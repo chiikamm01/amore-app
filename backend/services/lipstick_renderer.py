@@ -33,7 +33,8 @@ def render_images(base_image_path: str, lipstick_shades: List[str]) -> List[str]
     
     # Get API key from environment
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-    use_gemini = api_key and api_key != "your_gemini_api_key_here"
+    placeholder = api_key in (None, "", "your_api_key_here", "your_gemini_api_key_here")
+    use_gemini = api_key and not placeholder
     
     client = None
     if use_gemini:
@@ -58,10 +59,9 @@ def render_images(base_image_path: str, lipstick_shades: List[str]) -> List[str]
                 try:
                     # Use Gemini nano-banana to apply lipstick
                     prompt = f"""Local retouch only. Do not apply any global color grading or lighting changes.
-Only edit the lips area. Everything else must remain pixel-identical (background, hair, clothing, body, lighting, skin).
-
-Lips only: apply lipstick with hex color {hex_color}, soft satin finish, natural lip texture, no overlining. Make it look realistic and professional.
-Keep the same pose and expression."""
+                            Only edit the lips area. Everything else must remain pixel-identical (background, hair, clothing, body, lighting, skin).
+                            Lips only: apply lipstick with hex color {hex_color}, soft satin finish, natural lip texture, no overlining. Make it look realistic and professional.
+                            Keep the same pose and expression."""
                     
                     # Load image fresh for each request
                     image = Image.open(base_image_path)
